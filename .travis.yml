@@ -16,6 +16,9 @@ install:
 - |
   # Setup
   mkdir -p ~/tools && cd ~/tools
+  if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+    export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+  fi
 - |
   # Install Ninja-build
   ( set -euxo pipefail
