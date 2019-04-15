@@ -48,10 +48,10 @@ install:
       file_name="ninja-mac.zip"
     fi
     echo "-- Install Ninja-build..."
-    if [[ !${ChangedOnLinux:-} ]]; then
-      NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
-    else
+    if [[ ${ChangedOnLinux:-} && ${ChangedOnLinux} == true ]]; then
       NINJA_URL="https://github.com/Farwaykorse/chmod_mac/releases/download/chmod/ninja-mac.zip"
+    else
+      NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
     fi
     wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
     sum=$(sha512sum ${file_name})
