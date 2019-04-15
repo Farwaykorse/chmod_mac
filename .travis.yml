@@ -1,0 +1,51 @@
+
+language: cpp
+
+git:
+  depth: 20
+  quiet: true
+
+os: osx
+dist: xcode-10.2
+
+install:
+- |
+  # Setup
+  mkdir -p ~/tools && cd ~/tools
+- |
+  # Install Ninja-build (if not installed)
+  if [[ ! -x "$(command -v ninja)" ]]; then
+  ( set -euxo pipefail
+    NINJA_VER="v1.9.0"
+    if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
+      file_name="ninja-linux.zip"
+      NINJA_SHA512="a9c1f73c03aef147f1f43f50936d282c3065d0b72e1776d533abe47193c8b87777f39147ecc12db7ed240fc86c2944b60a90fd8cfd886bbd856ee53ee2c18dd0"
+    elif [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+      file_name="ninja-mac.zip"
+      NINJA_SHA512="0b83eb025e58bb5feea353c44ba3b746689163b3203fb766341d75e18ce7fcc81f22207ee9218e1aa084e22e0b267969f7c5d473d96951db81ac033ef0d897a8"
+    fi
+    echo "-- Install Ninja-build..."
+    NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
+    wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
+    sum=$(sha512sum ${file_name})
+    if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
+      unzip -q ${file_name} -d ninja
+      echo "-- Install Ninja-build... done"
+    else
+      echo "Ninja hash has changed!"  >&2
+      echo "Expecting: $NINJA_SHA512" >&2
+      echo "Actual:    $sum"          >&2
+      exit 1
+    fi
+  )
+  export PATH=$HOME/tools/ninja:$PATH
+  fi
+
+script:
+- ls -l ~/tools/ninja/ninja
+- ninja --version
+
+after_script:
+- chmod -c +x ninja/ninja
+- ninja --version
+
