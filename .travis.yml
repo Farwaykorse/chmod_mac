@@ -18,12 +18,19 @@ matrix:
     env:
     - NINJA_VER: v1.9.0
     - NINJA_SHA512: 0b83eb025e58bb5feea353c44ba3b746689163b3203fb766341d75e18ce7fcc81f22207ee9218e1aa084e22e0b267969f7c5d473d96951db81ac033ef0d897a8
-  - name: OSX_Ninja_v1.8.4
+  - name: OSX_Ninja_v1.8.2
     os: osx
     dist: xcode-10.2
     env:
     - NINJA_VER: v1.8.2
     - NINJA_SHA512: acadfb286eb7d93676629701917fa0c3c39f36daa068c169e4a098c29f97380d1ea95abfd42b04798ff118fd9dc93fdb250fcda36086bac20bc5506354214fc3
+  - name: OSX_Ninja_chmod_on_Linux
+    os: osx
+    dist: xcode-10.2
+    env:
+    - ChangedOnLinux: true
+    - NINJA_VER: v1.9.0
+    - NINJA_SHA512: c88c53f4011613bc607e89776d791cba4da85caca4bc85c91faf9a45fb05deac2a888c1df21383cc7e8d2e7d7a2169faf3565dd0e4f47bc7ec329efe41dbf045
 
 install:
 - |
@@ -41,7 +48,11 @@ install:
       file_name="ninja-mac.zip"
     fi
     echo "-- Install Ninja-build..."
-    NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
+    if [[ !${ChangedOnLinux:-} ]]; then
+      NINJA_URL="https://github.com/ninja-build/ninja/releases/download/${NINJA_VER}/${file_name}"
+    else
+      NINJA_URL="https://github.com/Farwaykorse/chmod_mac/releases/download/chmod/ninja-mac.zip"
+    fi
     wget -q "${NINJA_URL}" --tries=3 --timeout 90 -nc
     sum=$(sha512sum ${file_name})
     if [[ ${sum:0:128} = ${NINJA_SHA512} ]]; then
