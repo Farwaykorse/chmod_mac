@@ -5,8 +5,12 @@ git:
   depth: 20
   quiet: true
 
-os: osx
-dist: xcode-10.2
+matrix:
+  include:
+  - os: linux
+    dist: xenial
+  - os: osx
+    dist: xcode-10.2
 
 install:
 - |
