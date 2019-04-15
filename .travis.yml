@@ -13,8 +13,7 @@ install:
   # Setup
   mkdir -p ~/tools && cd ~/tools
 - |
-  # Install Ninja-build (if not installed)
-  if [[ ! -x "$(command -v ninja)" ]]; then
+  # Install Ninja-build
   ( set -euxo pipefail
     NINJA_VER="v1.9.0"
     if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
@@ -38,14 +37,12 @@ install:
       exit 1
     fi
   )
-  export PATH=$HOME/tools/ninja:$PATH
-  fi
 
 script:
 - ls -l ~/tools/ninja/ninja
-- ninja --version
+- ~/tools/ninja/ninja --version
 
 after_script:
-- chmod -c +x ninja/ninja
-- ninja --version
+- chmod -c +x ~/tools/ninja/ninja
+- ~/tools/ninja/ninja --version
 
